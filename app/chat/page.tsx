@@ -39,6 +39,33 @@ export default function ChatPage() {
     "🚀 Finalizing your sophisticated, modern website...",
   ];
 
+  // Cleanup intervals on component unmount
+  useEffect(() => {
+    return () => {
+      // This cleanup will run when component unmounts
+      // Individual intervals are cleared in the handleSubmit function
+    };
+  }, []);
+
+  // Populate iframe whenever response is available or when switching to preview tab
+  useEffect(() => {
+    const populateIframe = () => {
+      if (response && iframeRef.current && activeTab === "preview") {
+        const doc = iframeRef.current.contentWindow?.document;
+        if (doc) {
+          doc.open();
+          doc.write(response);
+          doc.close();
+        }
+      }
+    };
+
+    // Small delay to ensure iframe is properly mounted/visible
+    const timer = setTimeout(populateIframe, 100);
+    
+    return () => clearTimeout(timer);
+  }, [response, activeTab]);
+
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
   };
@@ -60,14 +87,6 @@ export default function ChatPage() {
     router.push("/login");
     return null;
   }
-
-  // Cleanup intervals on component unmount
-  useEffect(() => {
-    return () => {
-      // This cleanup will run when component unmounts
-      // Individual intervals are cleared in the handleSubmit function
-    };
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,32 +143,13 @@ export default function ChatPage() {
 };
 
 
-  // Populate iframe whenever response is available or when switching to preview tab
-  useEffect(() => {
-    const populateIframe = () => {
-      if (response && iframeRef.current && activeTab === "preview") {
-        const doc = iframeRef.current.contentWindow?.document;
-        if (doc) {
-          doc.open();
-          doc.write(response);
-          doc.close();
-        }
-      }
-    };
-
-    // Small delay to ensure iframe is properly mounted/visible
-    const timer = setTimeout(populateIframe, 100);
-    
-    return () => clearTimeout(timer);
-  }, [response, activeTab]);
-
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(response);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     } catch (error) {
-      console.error('Failed to copy code');
+      console.error('Failed to copy code:', error);
     }
   };
 
@@ -165,7 +165,7 @@ export default function ChatPage() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Failed to download code');
+      console.error('Failed to download code:', error);
     }
   };
 

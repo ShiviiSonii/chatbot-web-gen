@@ -96,7 +96,7 @@ export default function Home() {
                 <div className="text-4xl mb-4">💡</div>
                 <h3 className="text-xl font-semibold mb-3">AI-Powered</h3>
                 <p className="text-gray-600">
-                  Powered by Google's Gemini AI to understand your requirements and create stunning designs.
+                  Powered by Google&apos;s Gemini AI to understand your requirements and create stunning designs.
                 </p>
               </div>
               <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
