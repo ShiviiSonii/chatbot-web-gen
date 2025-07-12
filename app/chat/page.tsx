@@ -21,7 +21,6 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
-  const [showTemplates, setShowTemplates] = useState(true);
   const [copySuccess, setCopySuccess] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingTip, setLoadingTip] = useState(0);
@@ -91,7 +90,6 @@ export default function ChatPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setShowTemplates(false);
     setShowGenerationView(true);
     setLoadingProgress(0);
     setLoadingTip(0);
@@ -181,7 +179,6 @@ export default function ChatPage() {
 
   const startOver = () => {
     setResponse("");
-    setShowTemplates(true);
     setSelectedTemplate(null);
     setInput("");
     setLoadingProgress(0);
@@ -205,7 +202,6 @@ export default function ChatPage() {
               </Button>
               <div className="h-4 w-px bg-border"></div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="text-2xl">🚀</span>
                 <span className="font-medium">Web Code Generator</span>
               </div>
             </div>
@@ -239,117 +235,88 @@ export default function ChatPage() {
               <p className="text-muted-foreground">Generate beautiful HTML/CSS code from your description</p>
             </div>
 
+            {/* Input Form - Now positioned above templates */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder={
+                        selectedTemplate
+                          ? `Customize your ${selectedTemplate.name.toLowerCase()} or leave as-is...`
+                          : "Describe your website... (e.g., 'Create a modern portfolio with dark theme')"
+                      }
+                      className="flex-1 h-12"
+                    />
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={loading}
+                      className="px-6"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        "Generate"
+                      )}
+                    </Button>
+                  </div>
+                </form>
+
             {/* Templates Section */}
-            {showTemplates && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">Quick Start Templates</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowTemplates(false)}
-              >
-                Skip Templates
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {templates.map((template) => (
-                <Card
-                  key={template.id}
-                  className="cursor-pointer hover:shadow-md transition-all duration-200 group border-2 hover:border-primary/50"
-                  onClick={() => handleTemplateSelect(template)}
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center mb-2">
-                      <span className="text-2xl mr-2">{template.icon}</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {template.category}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-sm group-hover:text-primary">
-                      {template.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="text-xs" style={{
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
-                    }}>
-                      {template.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            
-            <div className="mt-4 text-center">
-              <CardDescription>
-                Or describe your own website below for a custom design
-              </CardDescription>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Selected Template Display */}
-      {selectedTemplate && (
-        <Card className="bg-primary/5 border-primary/20">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <span className="text-xl mr-2">{selectedTemplate.icon}</span>
+            <Card>
+              <CardHeader>
                 <div>
-                  <span className="font-medium text-primary">Selected: {selectedTemplate.name}</span>
-                  <CardDescription className="text-sm">
-                    {selectedTemplate.description}
-                  </CardDescription>
+                  <CardTitle className="text-xl">Quick Start Templates</CardTitle>
+                  <CardDescription>Choose a template to get started quickly, or describe your own website above</CardDescription>
                 </div>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={clearTemplate}
-              >
-                Clear
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <Input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={
-            selectedTemplate
-              ? `Customize your ${selectedTemplate.name.toLowerCase()} or leave as-is...`
-              : "Describe your website... (e.g., 'Create a modern portfolio with dark theme')"
-          }
-          className="flex-1 h-12"
-        />
-        <Button
-          type="submit"
-          size="lg"
-          disabled={loading}
-          className="px-6"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            "Generate"
-          )}
-        </Button>
-      </form>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {templates.map((template) => (
+                    <Card
+                      key={template.id}
+                      className={`cursor-pointer hover:shadow-md transition-all duration-200 group border-2 ${
+                        selectedTemplate?.id === template.id
+                          ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                      onClick={() => handleTemplateSelect(template)}
+                    >
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center mb-2">
+                          <span className="text-2xl mr-2">{template.icon}</span>
+                          <Badge variant="secondary" className="text-xs">
+                            {template.category}
+                          </Badge>
+                        </div>
+                        <CardTitle className={`text-sm ${
+                          selectedTemplate?.id === template.id
+                            ? 'text-primary'
+                            : 'group-hover:text-primary'
+                        }`}>
+                          {template.name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <CardDescription className="text-xs" style={{
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
+                        }}>
+                          {template.description}
+                        </CardDescription>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </>
         )}
 
