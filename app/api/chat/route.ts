@@ -1,7 +1,10 @@
-import { google } from "@ai-sdk/google";
-import { generateText } from "ai";
+import { GoogleGenAI } from "@google/genai";
 import { getTemplateById } from "@/lib/templates";
 import { getServerSession } from "next-auth";
+
+const genAI = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY!,
+});
 
 export async function POST(req: Request) {
   // Check authentication
@@ -159,11 +162,18 @@ CRITICAL OUTPUT REQUIREMENTS:
 - Include professional image placeholders with ratios and overlay text - never leave sections empty`;
   }
 
-  const result = await generateText({
-    model: google("gemini-2.0-flash-001"),
-    system: systemPrompt,
-    prompt: finalPrompt,
-    // No maxTokens limit to allow complete HTML generation
+  const result = await genAI.models.generateContent({
+    model: "gemini-2.0-flash-001",
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            text: systemPrompt.replace("${userMessage}", finalPrompt),
+          },
+        ],
+      },
+    ],
   });
 
   const text = result.text;
