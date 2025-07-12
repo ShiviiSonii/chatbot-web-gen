@@ -151,22 +151,22 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                 <p className="text-gray-700 italic leading-relaxed">
-                  "Create a modern portfolio website with a dark theme and gradient background"
+                  &quot;Create a modern portfolio website with a dark theme and gradient background&quot;
                 </p>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                 <p className="text-gray-700 italic leading-relaxed">
-                  "Build a landing page for a tech startup with a hero section and feature cards"
+                  &quot;Build a landing page for a tech startup with a hero section and feature cards&quot;
                 </p>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                 <p className="text-gray-700 italic leading-relaxed">
-                  "Design a restaurant website with a menu section and contact form"
+                  &quot;Design a restaurant website with a menu section and contact form&quot;
                 </p>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                 <p className="text-gray-700 italic leading-relaxed">
-                  "Create a blog layout with a sidebar and article preview cards"
+                  &quot;Create a blog layout with a sidebar and article preview cards&quot;
                 </p>
               </div>
             </div>

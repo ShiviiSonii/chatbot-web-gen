@@ -20,7 +20,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   // Redirect if already logged in
@@ -78,7 +78,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
       });
@@ -91,7 +91,7 @@ export default function RegisterPage() {
           router.push("/login");
         }, 3000);
       }
-    } catch (err) {
+    } catch (error) {
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);

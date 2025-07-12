@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, LogOut, Home, Loader2, Sparkles, Code, Palette, Zap, PaletteIcon, SparklesIcon, ZapIcon, Download } from "lucide-react";
+import { User, LogOut, Home, Loader2, Code, Zap, PaletteIcon, SparklesIcon, Download } from "lucide-react";
 import Link from "next/link";
 
 export default function ChatPage() {
@@ -39,23 +39,6 @@ export default function ChatPage() {
     "🚀 Finalizing your sophisticated, modern website...",
   ];
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (status === "loading") return; // Still loading
-    
-    if (!session) {
-      router.push("/login");
-    }
-  }, [session, status, router]);
-
-  // Cleanup intervals on component unmount
-  useEffect(() => {
-    return () => {
-      // This cleanup will run when component unmounts
-      // Individual intervals are cleared in the handleSubmit function
-    };
-  }, []);
-
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
   };
@@ -74,8 +57,17 @@ export default function ChatPage() {
 
   // Redirect to login if not authenticated
   if (!session) {
-    return null; // Will redirect via useEffect
+    router.push("/login");
+    return null;
   }
+
+  // Cleanup intervals on component unmount
+  useEffect(() => {
+    return () => {
+      // This cleanup will run when component unmounts
+      // Individual intervals are cleared in the handleSubmit function
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,12 +113,12 @@ export default function ChatPage() {
       clearInterval(tipInterval);
     }, 500);
     
-  } catch (err) {
-    console.error("❌ Error:", err);
-    console.log("Something went wrong. Please try again.");
-    clearInterval(progressInterval);
-    clearInterval(tipInterval);
-  } finally {
+      } catch (error) {
+      console.error("❌ Error:", error);
+      console.log("Something went wrong. Please try again.");
+      clearInterval(progressInterval);
+      clearInterval(tipInterval);
+    } finally {
     setTimeout(() => setLoading(false), 500);
   }
 };
@@ -156,7 +148,7 @@ export default function ChatPage() {
       await navigator.clipboard.writeText(response);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
-    } catch (err) {
+    } catch (error) {
       console.error('Failed to copy code');
     }
   };
@@ -172,7 +164,7 @@ export default function ChatPage() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch (err) {
+    } catch (error) {
       console.error('Failed to download code');
     }
   };

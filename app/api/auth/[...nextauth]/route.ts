@@ -11,9 +11,13 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: credentials?.email!,
-          password: credentials?.password!,
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const { data } = await supabase.auth.signInWithPassword({
+          email: credentials.email,
+          password: credentials.password,
         });
 
         if (data.user) {

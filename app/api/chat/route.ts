@@ -18,7 +18,9 @@ export async function POST(req: Request) {
   }
 
   const { messages, templateId } = await req.json();
-  const userMessage = messages.find((m: any) => m.role === "user")?.content;
+  const userMessage = messages.find(
+    (m: { role: string; content: string }) => m.role === "user"
+  )?.content;
 
   // Get template if specified
   const template = templateId ? getTemplateById(templateId) : null;
