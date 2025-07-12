@@ -1,103 +1,191 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const { data: session } = useSession();
+  const destination = session ? "/chat" : "/login";
+  const buttonText = session ? "Generate Code" : "Get Started - Login";
+  
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Modern Header within Banner */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
+        <div className="relative">
+          {/* Navigation Header */}
+          <nav className="container mx-auto px-4 py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span className="text-2xl">🚀</span>
+                <span className="text-xl font-bold text-gray-800">Web Code Generator</span>
+              </div>
+              <div className="hidden md:flex items-center space-x-6">
+                <Link href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Features
+                </Link>
+                <Link href="#how-it-works" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  How It Works
+                </Link>
+                <Link href="#examples" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Examples
+                </Link>
+                <Button asChild>
+                  <Link href={destination}>
+                    {session ? "Generate Code" : "Get Started"}
+                  </Link>
+                </Button>
+              </div>
+              {/* Mobile Menu Button */}
+              <div className="md:hidden">
+                <Button variant="outline" asChild>
+                  <Link href={destination}>
+                    {session ? "Generate" : "Login"}
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </nav>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          {/* Hero Section */}
+          <div className="container mx-auto px-4 py-16 text-center">
+            <div className="max-w-4xl mx-auto">
+              <div className="mb-8">
+                <div className="text-6xl mb-6">🚀</div>
+                <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-800 leading-tight">
+                  Web Code Generator
+                </h1>
+                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+                  Transform your ideas into beautiful, functional websites with AI. 
+                  Simply describe what you want, and watch as we generate clean HTML and CSS code instantly.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" asChild className="text-lg px-8 py-4">
+                    <Link href={destination}>
+                      {buttonText}
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="lg" asChild className="text-lg px-8 py-4">
+                    <Link href="#how-it-works">
+                      Learn More
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-6xl mx-auto">
+          {/* Features Section */}
+          <div id="features" className="mb-20">
+            <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Why Choose Our Generator?</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                <div className="text-4xl mb-4">⚡</div>
+                <h3 className="text-xl font-semibold mb-3">Lightning Fast</h3>
+                <p className="text-gray-600">
+                  Generate complete web pages in seconds. No more starting from scratch.
+                </p>
+              </div>
+              <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                <div className="text-4xl mb-4">💡</div>
+                <h3 className="text-xl font-semibold mb-3">AI-Powered</h3>
+                <p className="text-gray-600">
+                  Powered by Google's Gemini AI to understand your requirements and create stunning designs.
+                </p>
+              </div>
+              <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                <div className="text-4xl mb-4">🎨</div>
+                <h3 className="text-xl font-semibold mb-3">Beautiful Design</h3>
+                <p className="text-gray-600">
+                  Get modern, responsive designs that look great on all devices.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* How It Works Section */}
+          <div id="how-it-works" className="mb-20">
+            <div className="bg-white rounded-2xl shadow-xl p-12">
+              <h2 className="text-3xl font-bold mb-12 text-gray-800 text-center">How It Works</h2>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-2xl font-bold text-blue-600">1</span>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">Describe Your Vision</h3>
+                  <p className="text-gray-600">
+                    Tell us what kind of website you want. Be as detailed or as simple as you like.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-2xl font-bold text-blue-600">2</span>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">AI Generates Code</h3>
+                  <p className="text-gray-600">
+                    Our AI analyzes your description and creates clean, professional HTML and CSS code.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-2xl font-bold text-blue-600">3</span>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">Preview & Copy</h3>
+                  <p className="text-gray-600">
+                    See your website live, view the code, and copy it to use anywhere.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Examples Section */}
+          <div id="examples" className="mb-20">
+            <h2 className="text-3xl font-bold mb-12 text-gray-800 text-center">Try These Examples</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <p className="text-gray-700 italic leading-relaxed">
+                  "Create a modern portfolio website with a dark theme and gradient background"
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <p className="text-gray-700 italic leading-relaxed">
+                  "Build a landing page for a tech startup with a hero section and feature cards"
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <p className="text-gray-700 italic leading-relaxed">
+                  "Design a restaurant website with a menu section and contact form"
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <p className="text-gray-700 italic leading-relaxed">
+                  "Create a blog layout with a sidebar and article preview cards"
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-12 rounded-2xl text-center">
+            <h2 className="text-3xl font-bold mb-4">Ready to Start Building?</h2>
+            <p className="text-xl mb-8 opacity-90">
+              Join thousands of developers who are already using AI to speed up their workflow.
+            </p>
+            <Button size="lg" variant="secondary" asChild className="text-lg px-8 py-4">
+              <Link href={destination}>
+                {session ? "Generate Code Now" : "Get Started Now"}
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
