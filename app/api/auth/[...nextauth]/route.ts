@@ -1,9 +1,19 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { supabase } from "@/lib/supabase";
 
 const handler = NextAuth({
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -46,8 +56,8 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string;
+      if (token && session.user) {
+        (session.user as any).id = token.id as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
       }
