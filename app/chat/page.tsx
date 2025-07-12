@@ -175,6 +175,8 @@ export default function ChatPage() {
     try {
       const title = input.length > 50 ? input.substring(0, 50) + '...' : input;
       
+      console.log('💾 Attempting to save generation:', { title, hasResponse: !!response, hasInput: !!input });
+      
       const res = await fetch('/api/generations', {
         method: 'POST',
         headers: {
@@ -188,15 +190,24 @@ export default function ChatPage() {
         }),
       });
 
+      console.log('📡 Save response status:', res.status);
+      
       if (!res.ok) {
-        throw new Error('Failed to save generation');
+        const errorData = await res.json();
+        console.error('❌ Save failed:', errorData);
+        throw new Error(`Failed to save generation: ${errorData.error || 'Unknown error'} - ${errorData.details || ''}`);
       }
+
+      const data = await res.json();
+      console.log('✅ Generation saved successfully:', data.generation?.id);
 
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
-      console.error('Failed to save generation:', error);
-      // Could add error state here if needed
+      console.error('❌ Failed to save generation:', error);
+      
+      // Show error to user (you can enhance this with a toast notification)
+      alert(`Failed to save generation: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setSaving(false);
     }
