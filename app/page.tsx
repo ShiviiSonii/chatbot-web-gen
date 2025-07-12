@@ -16,7 +16,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
         <div className="relative">
           {/* Navigation Header */}
-          <nav className="container mx-auto px-4 py-6">
+          <nav className="max-w-7xl mx-auto px-4 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="text-xl font-bold text-gray-800">Web Code Generator</span>
@@ -49,7 +49,7 @@ export default function Home() {
           </nav>
 
           {/* Hero Section */}
-          <div className="container mx-auto px-4 py-16 text-center">
+          <div className="max-w-7xl mx-auto px-4 py-16 text-center">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
                 <div className="text-6xl mb-6">🚀</div>
@@ -78,7 +78,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
           {/* Features Section */}
           <div id="features" className="mb-20">

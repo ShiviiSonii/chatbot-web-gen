@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, LogOut, Home, Loader2, Code, Zap, PaletteIcon, SparklesIcon, Download } from "lucide-react";
-import Link from "next/link";
+import { Loader2, Code, Zap, PaletteIcon, SparklesIcon, Download, Save, CheckCircle } from "lucide-react";
+import Header from "@/components/Header";
 
 export default function ChatPage() {
   const { data: session, status } = useSession();
@@ -25,6 +25,8 @@ export default function ChatPage() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingTip, setLoadingTip] = useState(0);
   const [showGenerationView, setShowGenerationView] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const loadingTips = [
     "🎨 Analyzing your design requirements...",
@@ -65,9 +67,7 @@ export default function ChatPage() {
     return () => clearTimeout(timer);
   }, [response, activeTab]);
 
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
-  };
+
 
   // Show loading state while checking authentication
   if (status === "loading") {
@@ -167,6 +167,41 @@ export default function ChatPage() {
     }
   };
 
+  const saveGeneration = async () => {
+    if (!response || !input) return;
+    
+    setSaving(true);
+    
+    try {
+      const title = input.length > 50 ? input.substring(0, 50) + '...' : input;
+      
+      const res = await fetch('/api/generations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          prompt: input,
+          htmlCode: response,
+          templateId: selectedTemplate?.id,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to save generation');
+      }
+
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error('Failed to save generation:', error);
+      // Could add error state here if needed
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleTemplateSelect = (template: Template) => {
     setSelectedTemplate(template);
     setInput(template.prompt);
@@ -189,43 +224,7 @@ export default function ChatPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header with User Info and Logout */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/" className="flex items-center gap-2">
-                  <Home className="h-4 w-4" />
-                  <span className="hidden sm:inline">Home</span>
-                </Link>
-              </Button>
-              <div className="h-4 w-px bg-border"></div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="font-medium">Web Code Generator</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">
-                  {session?.user?.email?.split('@')[0]}
-                </span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleSignOut}
-                className="flex items-center gap-2"
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Logout</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header currentPage="chat" session={session} />
 
       <div className="p-6 max-w-7xl mx-auto space-y-6">
         {!showGenerationView && (
@@ -268,11 +267,11 @@ export default function ChatPage() {
                 </form>
 
             {/* Templates Section */}
-            <Card>
+            <Card className="border-2 border-slate-300 bg-gradient-to-br from-slate-100 to-slate-200 shadow-lg">
               <CardHeader>
                 <div>
-                  <CardTitle className="text-xl">Quick Start Templates</CardTitle>
-                  <CardDescription>Choose a template to get started quickly, or describe your own website above</CardDescription>
+                  <CardTitle className="text-xl text-slate-800">Quick Start Templates</CardTitle>
+                  <CardDescription className="text-slate-600">Choose a template to get started quickly, or describe your own website above</CardDescription>
                 </div>
               </CardHeader>
               <CardContent>
@@ -280,24 +279,24 @@ export default function ChatPage() {
                   {templates.map((template) => (
                     <Card
                       key={template.id}
-                      className={`cursor-pointer hover:shadow-md transition-all duration-200 group border-2 ${
+                      className={`cursor-pointer transition-all duration-300 group border-2 transform hover:scale-105 ${
                         selectedTemplate?.id === template.id
-                          ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                          : 'border-border hover:border-primary/50'
+                          ? 'border-gray-500 ring-2 ring-gray-500/30 shadow-lg'
+                          : 'border-gray-200 hover:border-gray-400 hover:bg-gray-50/70 hover:shadow-xl hover:-translate-y-1'
                       }`}
                       onClick={() => handleTemplateSelect(template)}
                     >
                       <CardHeader className="pb-2">
                         <div className="flex items-center mb-2">
-                          <span className="text-2xl mr-2">{template.icon}</span>
-                          <Badge variant="secondary" className="text-xs">
+                          <span className="text-2xl mr-2 group-hover:scale-110 transition-transform duration-300">{template.icon}</span>
+                          <Badge variant="secondary" className="text-xs group-hover:bg-gray-100 group-hover:text-gray-700 transition-colors duration-300">
                             {template.category}
                           </Badge>
                         </div>
                         <CardTitle className={`text-sm ${
                           selectedTemplate?.id === template.id
-                            ? 'text-primary'
-                            : 'group-hover:text-primary'
+                            ? 'text-gray-700 font-semibold'
+                            : 'group-hover:text-gray-600'
                         }`}>
                           {template.name}
                         </CardTitle>
@@ -429,6 +428,30 @@ export default function ChatPage() {
 
               <TabsContent value="code" className="m-0 relative">
                 <div className="absolute top-4 right-4 z-10 flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={saveGeneration}
+                    disabled={saving}
+                    className="flex items-center gap-2"
+                  >
+                    {saving ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : saveSuccess ? (
+                      <>
+                        <CheckCircle className="h-4 w-4" />
+                        Saved!
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4" />
+                        Save
+                      </>
+                    )}
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
