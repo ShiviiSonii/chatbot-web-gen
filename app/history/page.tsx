@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Trash2, Calendar, Layout } from "lucide-react";
+import { Trash2, Calendar, Layout } from "lucide-react";
 import Link from "next/link";
 import GenerationModal from "@/components/GenerationModal";
 import Header from "@/components/Header";
@@ -27,6 +27,27 @@ export default function HistoryPage() {
   const [generations, setGenerations] = useState<Generation[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch generations
+  useEffect(() => {
+    const fetchGenerations = async () => {
+      try {
+        const res = await fetch('/api/generations');
+        if (res.ok) {
+          const data = await res.json();
+          setGenerations(data.generations || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch generations:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (session) {
+      fetchGenerations();
+    }
+  }, [session]);
+
   // Show loading state while checking authentication
   if (status === "loading") {
     return (
@@ -44,25 +65,6 @@ export default function HistoryPage() {
     router.push("/login");
     return null;
   }
-
-  // Fetch generations
-  useEffect(() => {
-    const fetchGenerations = async () => {
-      try {
-        const res = await fetch('/api/generations');
-        if (res.ok) {
-          const data = await res.json();
-          setGenerations(data.generations || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch generations:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGenerations();
-  }, []);
 
   const deleteGeneration = async (id: string) => {
     try {

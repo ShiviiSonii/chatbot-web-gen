@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { templates, Template } from "@/lib/templates";
 import { Button } from "@/components/ui/button";
@@ -207,10 +207,7 @@ export default function ChatPage() {
     setInput(template.prompt);
   };
 
-  const clearTemplate = () => {
-    setSelectedTemplate(null);
-    setInput("");
-  };
+
 
   const startOver = () => {
     setResponse("");
