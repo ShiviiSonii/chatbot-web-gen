@@ -19,7 +19,6 @@ export default function Home() {
           <nav className="container mx-auto px-4 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <span className="text-2xl">🚀</span>
                 <span className="text-xl font-bold text-gray-800">Web Code Generator</span>
               </div>
               <div className="hidden md:flex items-center space-x-6">
